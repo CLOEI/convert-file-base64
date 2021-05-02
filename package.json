@@ -1,0 +1,23 @@
+{
+  "name": "convert-file-base64",
+  "version": "1.0.0",
+  "description": "a RestAPI to convert base64 file to your desired base64 file format",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CLOEI/convert-file-base64.git"
+  },
+  "author": "Cendy",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CLOEI/convert-file-base64/issues"
+  },
+  "homepage": "https://github.com/CLOEI/convert-file-base64#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "fluent-ffmpeg": "^2.1.2"
+  }
+}
