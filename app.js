@@ -13,38 +13,26 @@ app.get('/', (req, res) => {
 })
 app.post('/', (req, res) => {
     try {
-        const image = req.body.image;
-        const convertTo = req.body.convertTo;
-        const size = req.body.size;
+        const { image, convertTo, size, filters } = req.body;
 
-        if (image == null) res.send('Please provide an image');
-        if (convertTo == null) res.send('Please provide an output');
+        if (image == null) res.status('400').send('image parameter not provided.');
+        if (convertTo == null) res.status('400').send('convertTo parameter not provided');
 
         const data = image.replace(/^data:image\/\w+;base64,/, '');
-        const date = new Date().toISOString();
-        fs.writeFileSync(`./tmp/${date}`, data, { encoding: 'base64' });
-        if (!!size) {
-            ffmpeg()
-                .input(`./tmp/${date}`)
-                .size(size)
-                .toFormat(convertTo)
-                .save(`./tmp/${date}.${convertTo}`)
-                .on('end', () => {
-                    res.json({ resBuffer: fs.readFileSync(`./tmp/${date}.${convertTo}`).toString('base64') });
-                    fs.unlinkSync(`./tmp/${date}`);
-                    fs.unlinkSync(`./tmp/${date}.${convertTo}`)
-                })
-        } else {
-            ffmpeg()
-                .input(`./tmp/${date}`)
-                .toFormat(convertTo)
-                .save(`./tmp/${date}.${convertTo}`)
-                .on('end', () => {
-                    res.json({ resBuffer: fs.readFileSync(`./tmp/${date}.${convertTo}`).toString('base64') });
-                    fs.unlinkSync(`./tmp/${date}`);
-                    fs.unlinkSync(`./tmp/${date}.${convertTo}`)
-                })
-        }
+        const fileName = new Date().toISOString();
+        fs.writeFileSync(`./tmp/${fileName}`, data, { encoding: 'base64' });
+
+        ffmpeg()
+            .input(`./tmp/${fileName}`)
+            .size(size || '100%')
+            .videoFilter(filters || [])
+            .toFormat(convertTo)
+            .save(`./tmp/${fileName}.${convertTo}`)
+            .on('end', () => {
+                res.json({ resBuffer: fs.readFileSync(`./tmp/${fileName}.${convertTo}`).toString('base64') });
+                fs.unlinkSync(`./tmp/${fileName}`);
+                fs.unlinkSync(`./tmp/${fileName}.${convertTo}`)
+            })
 
     } catch (error) {
         console.log(error);
