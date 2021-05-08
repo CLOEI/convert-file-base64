@@ -30,6 +30,7 @@ app.post('/', (req, res) => {
             .save(`./tmp/${fileName}.${convertTo}`)
             .on('end', () => {
                 res.json({ resBuffer: fs.readFileSync(`./tmp/${fileName}.${convertTo}`).toString('base64') });
+                console.log(resBuffer: fs.readFileSync(`./tmp/${fileName}.${convertTo}`).toString('base64'));
                 fs.unlinkSync(`./tmp/${fileName}`);
                 fs.unlinkSync(`./tmp/${fileName}.${convertTo}`)
             })
